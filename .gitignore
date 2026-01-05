@@ -1,0 +1,22 @@
+# PR data files
+pr_data/*.json
+
+# HTML reports
+*.html
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
