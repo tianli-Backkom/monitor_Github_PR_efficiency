@@ -66,6 +66,8 @@ def get_pr_list(session, headers, time_range):
     pr_list = []
     page = 1
     per_page = 100  # 每页最大100条
+    total_prs_checked = 0
+    total_npu_prs_found = 0
     
     while True:
         url = f"{BASE_URL}/repos/{OWNER}/{REPO}/pulls"
@@ -74,8 +76,7 @@ def get_pr_list(session, headers, time_range):
             "sort": "created",
             "direction": "desc",
             "per_page": per_page,
-            "page": page,
-            "labels": "npu"  # 只获取带有npu label的PR
+            "page": page
         }
         
         response = session.get(url, headers=headers, params=params)
@@ -94,17 +95,28 @@ def get_pr_list(session, headers, time_range):
         if not prs:
             break
         
-        # 筛选近两周内创建的PR
+        total_prs_checked += len(prs)
+        
+        # 筛选近两周内创建且带有npu标签的PR
+        npu_prs_in_page = 0
         for pr in prs:
             created_at = datetime.strptime(pr["created_at"], TIME_FORMAT)
             since = datetime.strptime(time_range["since"], TIME_FORMAT)
             until = datetime.strptime(time_range["until"], TIME_FORMAT)
             
             if since <= created_at <= until:
-                pr_list.append(pr)  # 直接保存完整的PR对象，而不仅仅是PR编号
+                # 检查PR是否带有npu标签
+                has_npu_label = any(label.get('name') == 'npu' for label in pr.get('labels', []))
+                if has_npu_label:
+                    pr_list.append(pr)
+                    npu_prs_in_page += 1
+                    total_npu_prs_found += 1
             elif created_at < since:
                 # 因为按创建时间降序排序，所以后续PR都会更早，直接退出循环
                 break
+        
+        # 进度显示，每处理1页更新一次
+        print(f"已检查 {total_prs_checked} 个PR，找到 {total_npu_prs_found} 个带有npu标签的PR...")
         
         if created_at < since:
             break
@@ -112,6 +124,7 @@ def get_pr_list(session, headers, time_range):
         page += 1
         time.sleep(0.5)  # 避免请求过快
     
+    print(f"共检查 {total_prs_checked} 个PR，找到 {total_npu_prs_found} 个带有npu标签的PR")
     return pr_list
 
 
@@ -140,11 +153,13 @@ def get_pr_details_batch(session, headers, pr_list, batch_size=10):
     detail_api_calls = 0
     total_prs = len(pr_list)
     
+    # 显示初始PR数量
+    print(f"开始处理 {total_prs} 个带有npu标签的PR...")
+    
     for i, pr in enumerate(pr_list, 1):
         try:
-            # 进度显示，每处理10个PR更新一次
-            if i % 10 == 0 or i == total_prs:
-                print(f"处理进度: {i}/{total_prs} ({i/total_prs:.1%})...")
+            # 进度显示，每处理1个PR更新一次
+            print(f"处理第 {i}/{total_prs} 个PR：#{pr['number']}...")
             
             # 获取PR详情
             pr_detail = get_pr_detail(session, headers, pr)
@@ -305,20 +320,30 @@ def run_daily():
         # 获取PR列表
         print("正在获取PR列表...")
         pr_list = get_pr_list(session, headers, time_range)
-        print(f"共找到 {len(pr_list)} 个符合条件的PR")
+        
+        # 筛选带有npu标签的PR
+        npu_pr_list = []
+        for pr in pr_list:
+            # 检查PR是否带有npu标签
+            has_npu_label = any(label.get('name') == 'npu' for label in pr.get('labels', []))
+            if has_npu_label:
+                npu_pr_list.append(pr)
+        
+        print(f"共找到 {len(npu_pr_list)} 个带有npu标签的PR")
         
         # 批量获取PR详情
-        print("正在批量获取PR详情...")
-        pr_details, detail_api_calls, interrupted = get_pr_details_batch(session, headers, pr_list)
-        
-        if pr_details:
-            # 保存数据
-            save_pr_data(pr_details)
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 数据获取完成")
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 共调用详情接口 {detail_api_calls} 次")
-        
-        if interrupted:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 用户中断操作，已处理 {len(pr_details)} 个PR")
+        if npu_pr_list:
+            print("正在批量获取PR详情...")
+            pr_details, detail_api_calls, interrupted = get_pr_details_batch(session, headers, npu_pr_list)
+            
+            if pr_details:
+                # 保存数据
+                save_pr_data(pr_details)
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 数据获取完成")
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 共调用详情接口 {detail_api_calls} 次")
+            
+            if interrupted:
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 用户中断操作，已处理 {len(pr_details)} 个PR")
         
     except Exception as e:
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 发生错误: {e}", file=sys.stderr)
