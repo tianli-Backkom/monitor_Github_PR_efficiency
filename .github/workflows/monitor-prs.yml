@@ -23,7 +23,7 @@ jobs:
 
       - name: Run PR monitor script
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python monitor_prs.py
 
       - name: Generate PR efficiency report
