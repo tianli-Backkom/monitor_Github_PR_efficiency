@@ -36,12 +36,10 @@ jobs:
           path: pr_efficiency_report.html
           retention-days: 30
 
-      - name: Commit and push report to repository
+      - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add pr_efficiency_report.html
-          git commit -m "Update PR efficiency report"
+          git commit -m "🤖 Auto-update PR dashboard data - $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
           git push
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
