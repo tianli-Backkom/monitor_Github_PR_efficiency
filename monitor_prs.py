@@ -146,32 +146,8 @@ def get_pr_details_batch(session, headers, pr_list, batch_size=10):
             if i % 10 == 0 or i == total_prs:
                 print(f"处理进度: {i}/{total_prs} ({i/total_prs:.1%})...")
             
-            # 检查PR是否带有npu标签
-            pr_has_npu_label = False
-            if 'labels' in pr:
-                for label in pr['labels']:
-                    if label.get('name') == 'npu':
-                        pr_has_npu_label = True
-                        break
-            
-            if not pr_has_npu_label:
-                print(f"跳过PR #{pr['number']}：不带有npu标签")
-                continue
-            
             # 获取PR详情
             pr_detail = get_pr_detail(session, headers, pr)
-            
-            # 再次检查PR详情中是否带有npu标签（确保准确性）
-            pr_detail_has_npu_label = False
-            if 'labels' in pr_detail:
-                for label in pr_detail['labels']:
-                    if label.get('name') == 'npu':
-                        pr_detail_has_npu_label = True
-                        break
-            
-            if not pr_detail_has_npu_label:
-                print(f"跳过PR #{pr['number']}：详情中不带有npu标签")
-                continue
             
             formatted_data = format_pr_data(pr_detail)
             
