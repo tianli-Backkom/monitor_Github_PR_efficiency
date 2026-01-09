@@ -19,17 +19,10 @@ HTML_OUTPUT_FILE = "pr_efficiency_report.html"  # HTML输出文件
 
 def load_latest_pr_data():
     """加载最新的PR数据"""
-    # 检查数据目录是否存在
-    if not os.path.exists(DATA_DIR):
-        print(f"错误: 数据目录 {DATA_DIR} 不存在", file=sys.stderr)
-        print(f"请先运行 monitor_prs.py 生成PR数据", file=sys.stderr)
-        sys.exit(1)
-    
     # 获取数据目录下的所有JSON文件
     json_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".json") and f.startswith("pr_data_")]
     if not json_files:
         print(f"错误: 数据目录 {DATA_DIR} 中没有找到PR数据文件", file=sys.stderr)
-        print(f"请先运行 monitor_prs.py 生成PR数据", file=sys.stderr)
         sys.exit(1)
     
     # 优先使用带"_fixed"后缀的修复后文件

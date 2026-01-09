@@ -180,20 +180,37 @@ python generate_pr_report.py --output my_report.html
 
 使用GitHub Actions实现自动化运行：
 
-1. **配置GitHub Secrets**：
-   - 在GitHub仓库中导航到 `Settings` → `Secrets and variables` → `Actions`
-   - 添加名为 `GH_TOKEN` 的secret，值为你的GitHub Personal Access Token
-   - 确保PAT具有 `repo` 或 `public_repo` 权限
+1. **生成Personal Access Token (PAT)**：
+   - 登录GitHub账号
+   - 进入 `Settings` → `Developer settings` → `Personal access tokens` → `Tokens (classic)`
+   - 点击 `Generate new token (classic)`
+   - **重要**：选择权限：
+     - `public_repo`（如果sgl-project/sglang是公开仓库）
+     - 或 `repo`（如果是私有仓库）
+   - 设置过期时间（建议选择90天或更长时间）
+   - 生成并复制token
 
-2. **Workflow执行流程**：
+2. **配置GitHub Secrets**：
+   - 在你的monitor_Github_PR_efficiency仓库中导航到 `Settings` → `Secrets and variables` → `Actions`
+   - 点击 `New repository secret`
+   - Name: `GH_TOKEN`
+   - Secret: 粘贴刚才生成的Personal Access Token
+   - 点击 `Add secret`
+
+3. **Workflow执行流程**：
    - 自动检出代码
    - 设置Python环境
    - 安装依赖
-   - 运行监控脚本获取PR数据
+   - 运行监控脚本获取PR数据（使用GH_TOKEN访问sgl-project/sglang仓库）
    - 生成PR效率报告
    - 上传报告作为artifact
 
 Workflow配置文件：[`.github/workflows/monitor-prs.yml`](file:///d:/code/monitor_Github_PR_efficiency/.github/workflows/monitor-prs.yml)
+
+**注意**：
+- `GH_TOKEN`用于访问sgl-project/sglang仓库获取PR数据
+- 确保Token具有访问sgl-project/sglang仓库的权限
+- 如果Token权限不足或已过期，会导致401 Unauthorized错误
 
 ### 方式二：本地定时任务
 

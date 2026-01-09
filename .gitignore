@@ -1,3 +1,10 @@
+# PR data files
+pr_data/*.json
+
+# HTML reports
+*.html
+!pr_efficiency_report.html
+
 # Python cache
 __pycache__/
 *.pyc
