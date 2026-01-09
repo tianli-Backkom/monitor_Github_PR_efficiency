@@ -18,10 +18,10 @@
         .metric-card { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); text-align: center; }
         .metric-value { font-size: 2.5em; font-weight: bold; color: #28a745; margin-bottom: 10px; }
         .metric-label { font-size: 1.1em; color: #666; }
-        .section { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 30px; }
+        .section { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 30px; overflow-x: auto; }
         h2 { font-size: 1.8em; margin-bottom: 20px; color: #24292e; border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e1e4e8; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; min-width: 1500px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e1e4e8; white-space: nowrap; }
         th { background-color: #f6f8fa; font-weight: 600; }
         tr:hover { background-color: #f6f8fa; }
         a { color: #0366d6; text-decoration: none; }
@@ -39,34 +39,223 @@
     <div class="container">
         <header>
             <h1>GitHub PR效率报告</h1>
-            <p class="subtitle">仓库: sgl-project/sglang | 生成时间: 2026-01-09 02:56:44</p>
+            <p class="subtitle">仓库: sgl-project/sglang | 生成时间: 2026-01-09 10:21:36</p>
         </header>
         
         <!-- 核心指标 -->
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="metric-value">64</div>
-                <div class="metric-label">总PR数</div>
+                <div class="metric-value">66</div>
+                <div class="metric-label">PR总数</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">37</div>
-                <div class="metric-label">已合并PR数</div>
+                <div class="metric-value">20</div>
+                <div class="metric-label">待合入PR数量</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">57.8%</div>
-                <div class="metric-label">合并率</div>
+                <div class="metric-value">5</div>
+                <div class="metric-label">run-ci标签PR数量</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">0.8天</div>
-                <div class="metric-label">平均生命周期</div>
+                <div class="metric-value">54.5 %</div>
+                <div class="metric-label">PR门禁成功率</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">7002.9</div>
-                <div class="metric-label">平均新增代码行</div>
+                <div class="metric-value">2m17s</div>
+                <div class="metric-label">门禁静态检查任务时长</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">4.5</div>
-                <div class="metric-label">平均评论数</div>
+                <div class="metric-value">30m52s</div>
+                <div class="metric-label">PR Test自动化执行时长</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">30m59s</div>
+                <div class="metric-label">PR Test(NPU)自动化执行时长</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">3.7</div>
+                <div class="metric-label">平均门禁重试次数</div>
+            </div>
+        </div>
+        
+        <!-- 门禁重试次数分布 -->
+        <div class="section">
+            <h2>门禁重试次数分布</h2>
+            <div class="creator-list">
+                
+        <div class="creator-item">
+            <span class="creator-name">0次</span>
+            <span class="creator-count">25</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">1-2次</span>
+            <span class="creator-count">2</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">3-5次</span>
+            <span class="creator-count">14</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">>5次</span>
+            <span class="creator-count">25</span>
+        </div>
+        
+            </div>
+        </div>
+        
+        <!-- 门禁重试次数最多的开发者 -->
+        <div class="section">
+            <h2>门禁重试次数最多的开发者（需要重点关注）</h2>
+            <div class="creator-list">
+                
+        <div class="creator-item">
+            <span class="creator-name">Hexq0210</span>
+            <span class="creator-count">35</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">yurekami</span>
+            <span class="creator-count">14</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">iforgetmyname</span>
+            <span class="creator-count">12</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">Fridge003</span>
+            <span class="creator-count">12</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">hnyls2002</span>
+            <span class="creator-count">11</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">hw-csong</span>
+            <span class="creator-count">9</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">chaos-gmi</span>
+            <span class="creator-count">9</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">McZyWu</span>
+            <span class="creator-count">8</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">JiaruiChang5268</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">LinyuanLi0046</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">wenxuewuhd</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">yy01zz02</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">sunxxuns</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">Ratish1</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">Kangyan-Zhou</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">changhuaixin</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">zhuyijie88</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">tom-jerr</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">yhyang201</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">qeternity</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">vlserov</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">66RING</span>
+            <span class="creator-count">7</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">yctseng0211</span>
+            <span class="creator-count">6</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">michaelzhang-ai</span>
+            <span class="creator-count">6</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">ZhengdQin</span>
+            <span class="creator-count">6</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">alisonshao</span>
+            <span class="creator-count">5</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">husf1130</span>
+            <span class="creator-count">5</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">Goalina</span>
+            <span class="creator-count">4</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">chenxu214</span>
+            <span class="creator-count">3</span>
+        </div>
+        
             </div>
         </div>
         
@@ -108,10 +297,63 @@
                         <th>合并状态</th>
                         <th>代码变更</th>
                         <th>评论数</th>
+                        <th>门禁状态</th>
+                        <th>门禁静态检查</th>
+                        <th>PR Test执行时长</th>
+                        <th>PR Test(NPU)执行时长</th>
+                        <th>门禁重试次数</th>
                     </tr>
                 </thead>
                 <tbody>
                     
+        <tr>
+            <td><a href="https://github.com/sgl-project/sglang/pull/16795" target="_blank">#16795</a></td>
+            <td>[NPU]model adaptation for ascend</td>
+            <td>open</td>
+            <td>JiaruiChang5268</td>
+            <td>2026-01-09T09:42:07Z</td>
+            <td>Open</td>
+            <td>+481 / -105 (22 files)</td>
+            <td>1 + 2</td>
+            <td>❌ 失败</td>
+            <td>2m9s</td>
+            <td>19s</td>
+            <td>22s</td>
+            <td>7</td>
+        </tr>
+        
+        <tr>
+            <td><a href="https://github.com/sgl-project/sglang/pull/16789" target="_blank">#16789</a></td>
+            <td>support model baichuan2-13B and minicpm3-4B for npu</td>
+            <td>open</td>
+            <td>McZyWu</td>
+            <td>2026-01-09T07:31:40Z</td>
+            <td>Open</td>
+            <td>+361 / -133 (5 files)</td>
+            <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m6s</td>
+            <td>19s</td>
+            <td>18s</td>
+            <td>7</td>
+        </tr>
+        
+        <tr>
+            <td><a href="https://github.com/sgl-project/sglang/pull/16784" target="_blank">#16784</a></td>
+            <td>[NPU] support llama-3.2-11B-vision-instruct mode for NPU</td>
+            <td>open</td>
+            <td>Hexq0210</td>
+            <td>2026-01-09T06:36:35Z</td>
+            <td>Open</td>
+            <td>+51 / -15 (3 files)</td>
+            <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
+        </tr>
+        
         <tr>
             <td><a href="https://github.com/sgl-project/sglang/pull/16749" target="_blank">#16749</a></td>
             <td>Adjust the cancel PR workflows for better preemption.</td>
@@ -121,6 +363,11 @@
             <td>已合并</td>
             <td>+141 / -96 (3 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>2m23s</td>
+            <td>18s</td>
+            <td>11s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -132,6 +379,11 @@
             <td>已合并</td>
             <td>+57 / -54 (2 files)</td>
             <td>1 + 2</td>
+            <td>✅ 通过</td>
+            <td>2m9s</td>
+            <td>20s</td>
+            <td>11s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -143,6 +395,11 @@
             <td>Open</td>
             <td>+14 / -17 (3 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -152,8 +409,13 @@
             <td>chenxu214</td>
             <td>2026-01-08T03:19:37Z</td>
             <td>Open</td>
-            <td>+356 / -54 (5 files)</td>
+            <td>+377 / -54 (5 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -165,6 +427,11 @@
             <td>已合并</td>
             <td>+2 / -2 (1 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -176,6 +443,11 @@
             <td>已合并</td>
             <td>+106 / -143 (60 files)</td>
             <td>3 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m13s</td>
+            <td>4h23m13s</td>
+            <td>10s</td>
+            <td>6</td>
         </tr>
         
         <tr>
@@ -187,6 +459,11 @@
             <td>已合并</td>
             <td>+137 / -137 (2 files)</td>
             <td>1 + 3</td>
+            <td>✅ 通过</td>
+            <td>2m11s</td>
+            <td>20s</td>
+            <td>11s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -198,6 +475,11 @@
             <td>已合并</td>
             <td>+0 / -3623 (2 files)</td>
             <td>2 + 1</td>
+            <td>✅ 通过</td>
+            <td>2m14s</td>
+            <td>17s</td>
+            <td>10s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -209,6 +491,11 @@
             <td>Open</td>
             <td>+238 / -10 (5 files)</td>
             <td>1 + 6</td>
+            <td>❌ 失败</td>
+            <td>2m12s</td>
+            <td>28s</td>
+            <td>18s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -220,6 +507,11 @@
             <td>已合并</td>
             <td>+5 / -3 (4 files)</td>
             <td>1 + 1</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -230,7 +522,12 @@
             <td>2026-01-07T08:11:50Z</td>
             <td>已合并</td>
             <td>+194 / -59 (7 files)</td>
-            <td>1 + 4</td>
+            <td>2 + 4</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -242,6 +539,11 @@
             <td>已合并</td>
             <td>+40 / -16 (1 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -253,6 +555,11 @@
             <td>已合并</td>
             <td>+18 / -0 (1 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m6s</td>
+            <td>1h57m45s</td>
+            <td>1h19m50s</td>
+            <td>2</td>
         </tr>
         
         <tr>
@@ -264,6 +571,11 @@
             <td>未合并</td>
             <td>+18 / -0 (1 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m9s</td>
+            <td>23s</td>
+            <td>20s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -275,17 +587,27 @@
             <td>已合并</td>
             <td>+18 / -0 (1 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
             <td><a href="https://github.com/sgl-project/sglang/pull/16588" target="_blank">#16588</a></td>
             <td>[AMD] Add MI35x nightly CI tests</td>
-            <td>open</td>
+            <td>closed</td>
             <td>michaelzhang-ai</td>
             <td>2026-01-06T20:30:59Z</td>
-            <td>Open</td>
+            <td>已合并</td>
             <td>+1229 / -139 (8 files)</td>
-            <td>4 + 2</td>
+            <td>5 + 2</td>
+            <td>❌ 失败</td>
+            <td>2m8s</td>
+            <td>1h25m47s</td>
+            <td>8s</td>
+            <td>6</td>
         </tr>
         
         <tr>
@@ -297,6 +619,11 @@
             <td>未合并</td>
             <td>+368580 / -103886 (2396 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m4s</td>
+            <td>29s</td>
+            <td>10s</td>
+            <td>9</td>
         </tr>
         
         <tr>
@@ -308,6 +635,11 @@
             <td>已合并</td>
             <td>+13 / -15 (1 files)</td>
             <td>2 + 0</td>
+            <td>✅ 通过</td>
+            <td>2m19s</td>
+            <td>18s</td>
+            <td>11s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -319,6 +651,11 @@
             <td>Open</td>
             <td>+113 / -3 (5 files)</td>
             <td>1 + 2</td>
+            <td>❌ 失败</td>
+            <td>2m2s</td>
+            <td>35s</td>
+            <td>21s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -330,6 +667,11 @@
             <td>已合并</td>
             <td>+357 / -119 (3 files)</td>
             <td>2 + 3</td>
+            <td>✅ 通过</td>
+            <td>2m12s</td>
+            <td>19s</td>
+            <td>12s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -341,6 +683,11 @@
             <td>Open</td>
             <td>+4 / -5 (2 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m14s</td>
+            <td>22s</td>
+            <td>1h1m54s</td>
+            <td>4</td>
         </tr>
         
         <tr>
@@ -352,6 +699,11 @@
             <td>已合并</td>
             <td>+87 / -37 (4 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -363,6 +715,11 @@
             <td>Open</td>
             <td>+5213 / -7 (41 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -374,6 +731,11 @@
             <td>已合并</td>
             <td>+48 / -26 (15 files)</td>
             <td>6 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m12s</td>
+            <td>6h38m31s</td>
+            <td>2h57m29s</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -385,6 +747,11 @@
             <td>已合并</td>
             <td>+15 / -6 (5 files)</td>
             <td>3 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m8s</td>
+            <td>8m52s</td>
+            <td>4m16s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -396,6 +763,11 @@
             <td>Open</td>
             <td>+48567 / -27 (173 files)</td>
             <td>1 + 5</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -405,8 +777,13 @@
             <td>yy01zz02</td>
             <td>2026-01-04T11:21:31Z</td>
             <td>Open</td>
-            <td>+490 / -32 (12 files)</td>
-            <td>3 + 26</td>
+            <td>+509 / -35 (12 files)</td>
+            <td>4 + 26</td>
+            <td>❌ 失败</td>
+            <td>2m4s</td>
+            <td>1h25m38s</td>
+            <td>12s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -418,6 +795,11 @@
             <td>已合并</td>
             <td>+161 / -74 (2 files)</td>
             <td>1 + 5</td>
+            <td>✅ 通过</td>
+            <td>2m18s</td>
+            <td>10s</td>
+            <td>11s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -428,7 +810,12 @@
             <td>2026-01-03T02:07:53Z</td>
             <td>Open</td>
             <td>+36 / -19 (5 files)</td>
-            <td>0 + 0</td>
+            <td>2 + 0</td>
+            <td>✅ 通过</td>
+            <td>2m4s</td>
+            <td>16s</td>
+            <td>10s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -440,6 +827,11 @@
             <td>Open</td>
             <td>+33 / -79 (4 files)</td>
             <td>1 + 2</td>
+            <td>❌ 失败</td>
+            <td>2m11s</td>
+            <td>18s</td>
+            <td>14s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -451,6 +843,11 @@
             <td>已合并</td>
             <td>+27 / -15 (1 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>2m29s</td>
+            <td>14s</td>
+            <td>12s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -462,6 +859,11 @@
             <td>已合并</td>
             <td>+3722 / -312 (4 files)</td>
             <td>1 + 1</td>
+            <td>✅ 通过</td>
+            <td>2m9s</td>
+            <td>9s</td>
+            <td>9s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -473,6 +875,11 @@
             <td>已合并</td>
             <td>+64 / -72 (5 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -484,6 +891,11 @@
             <td>已合并</td>
             <td>+17 / -17 (9 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m30s</td>
+            <td>22s</td>
+            <td>20s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -495,6 +907,11 @@
             <td>已合并</td>
             <td>+8 / -8 (1 files)</td>
             <td>2 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -506,6 +923,11 @@
             <td>已合并</td>
             <td>+10 / -24 (6 files)</td>
             <td>3 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m18s</td>
+            <td>8m14s</td>
+            <td>8m39s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -517,6 +939,11 @@
             <td>Open</td>
             <td>+220 / -83 (5 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -528,6 +955,11 @@
             <td>未合并</td>
             <td>+7376 / -879 (62 files)</td>
             <td>3 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -539,6 +971,11 @@
             <td>已合并</td>
             <td>+182 / -181 (5 files)</td>
             <td>1 + 4</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -550,6 +987,11 @@
             <td>已合并</td>
             <td>+314 / -44 (9 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m25s</td>
+            <td>14m15s</td>
+            <td>10m32s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -561,6 +1003,11 @@
             <td>Open</td>
             <td>+1 / -7 (1 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m31s</td>
+            <td>20s</td>
+            <td>17s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -572,6 +1019,11 @@
             <td>已合并</td>
             <td>+237 / -94 (3 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>1</td>
         </tr>
         
         <tr>
@@ -583,6 +1035,11 @@
             <td>已合并</td>
             <td>+162 / -142 (5 files)</td>
             <td>2 + 52</td>
+            <td>✅ 通过</td>
+            <td>2m35s</td>
+            <td>11s</td>
+            <td>12s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -594,6 +1051,11 @@
             <td>已合并</td>
             <td>+132 / -112 (5 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -605,6 +1067,11 @@
             <td>已合并</td>
             <td>+1 / -1 (1 files)</td>
             <td>1 + 0</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -616,6 +1083,11 @@
             <td>已合并</td>
             <td>+52 / -16 (8 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m2s</td>
+            <td>2h2m28s</td>
+            <td>9h41m13s</td>
+            <td>3</td>
         </tr>
         
         <tr>
@@ -627,6 +1099,11 @@
             <td>Open</td>
             <td>+6177 / -14 (27 files)</td>
             <td>2 + 2</td>
+            <td>❌ 失败</td>
+            <td>2m35s</td>
+            <td>25s</td>
+            <td>10s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -638,6 +1115,11 @@
             <td>已合并</td>
             <td>+6 / -6 (4 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m27s</td>
+            <td>54m26s</td>
+            <td>3h3m52s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -649,6 +1131,11 @@
             <td>未合并</td>
             <td>+32 / -45 (9 files)</td>
             <td>2 + 2</td>
+            <td>❌ 失败</td>
+            <td>2m41s</td>
+            <td>23s</td>
+            <td>17s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -660,6 +1147,11 @@
             <td>已合并</td>
             <td>+4 / -1 (2 files)</td>
             <td>1 + 5</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -671,6 +1163,11 @@
             <td>已合并</td>
             <td>+23 / -17 (4 files)</td>
             <td>1 + 4</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -682,6 +1179,11 @@
             <td>已合并</td>
             <td>+580 / -6 (4 files)</td>
             <td>1 + 6</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -693,6 +1195,11 @@
             <td>已合并</td>
             <td>+578 / -6 (4 files)</td>
             <td>2 + 22</td>
+            <td>✅ 通过</td>
+            <td>2m31s</td>
+            <td>18s</td>
+            <td>8s</td>
+            <td>5</td>
         </tr>
         
         <tr>
@@ -704,6 +1211,11 @@
             <td>已合并</td>
             <td>+31 / -35 (8 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m24s</td>
+            <td>1h24m42s</td>
+            <td>56m2s</td>
+            <td>6</td>
         </tr>
         
         <tr>
@@ -715,6 +1227,11 @@
             <td>未合并</td>
             <td>+5 / -0 (1 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m30s</td>
+            <td>20s</td>
+            <td>14s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -726,6 +1243,11 @@
             <td>未合并</td>
             <td>+2 / -1 (1 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m28s</td>
+            <td>24s</td>
+            <td>17s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -737,6 +1259,11 @@
             <td>Open</td>
             <td>+3 / -12 (1 files)</td>
             <td>5 + 1</td>
+            <td>❌ 失败</td>
+            <td>2m6s</td>
+            <td>49s</td>
+            <td>1h8m58s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -748,6 +1275,11 @@
             <td>Open</td>
             <td>+1 / -1 (1 files)</td>
             <td>2 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m33s</td>
+            <td>11m40s</td>
+            <td>-</td>
+            <td>6</td>
         </tr>
         
         <tr>
@@ -759,6 +1291,11 @@
             <td>Open</td>
             <td>+38 / -66 (2 files)</td>
             <td>1 + 0</td>
+            <td>❌ 失败</td>
+            <td>2m29s</td>
+            <td>17s</td>
+            <td>16s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -770,6 +1307,11 @@
             <td>未合并</td>
             <td>+2 / -2 (1 files)</td>
             <td>1 + 1</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -781,6 +1323,11 @@
             <td>未合并</td>
             <td>+467 / -94 (23 files)</td>
             <td>1 + 2</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
         <tr>
@@ -792,6 +1339,11 @@
             <td>Open</td>
             <td>+407 / -17 (7 files)</td>
             <td>1 + 12</td>
+            <td>❌ 失败</td>
+            <td>2m22s</td>
+            <td>27s</td>
+            <td>10s</td>
+            <td>7</td>
         </tr>
         
         <tr>
@@ -803,17 +1355,11 @@
             <td>已合并</td>
             <td>+38 / -30 (3 files)</td>
             <td>1 + 3</td>
-        </tr>
-        
-        <tr>
-            <td><a href="https://github.com/sgl-project/sglang/pull/15883" target="_blank">#15883</a></td>
-            <td>[NPU] Add pyhccl</td>
-            <td>open</td>
-            <td>kip-cxj</td>
-            <td>2025-12-26T09:04:40Z</td>
-            <td>Open</td>
-            <td>+978 / -0 (3 files)</td>
-            <td>2 + 5</td>
+            <td>✅ 通过</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>0</td>
         </tr>
         
                 </tbody>
@@ -827,7 +1373,12 @@
                 
         <div class="creator-item">
             <span class="creator-name">Hexq0210</span>
-            <span class="creator-count">9</span>
+            <span class="creator-count">10</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">McZyWu</span>
+            <span class="creator-count">4</span>
         </div>
         
         <div class="creator-item">
@@ -837,11 +1388,6 @@
         
         <div class="creator-item">
             <span class="creator-name">monkeyLoveding</span>
-            <span class="creator-count">3</span>
-        </div>
-        
-        <div class="creator-item">
-            <span class="creator-name">McZyWu</span>
             <span class="creator-count">3</span>
         </div>
         
@@ -893,6 +1439,11 @@
         <div class="creator-item">
             <span class="creator-name">yurekami</span>
             <span class="creator-count">2</span>
+        </div>
+        
+        <div class="creator-item">
+            <span class="creator-name">JiaruiChang5268</span>
+            <span class="creator-count">1</span>
         </div>
         
         <div class="creator-item">
@@ -1015,11 +1566,6 @@
             <span class="creator-count">1</span>
         </div>
         
-        <div class="creator-item">
-            <span class="creator-name">kip-cxj</span>
-            <span class="creator-count">1</span>
-        </div>
-        
             </div>
         </div>
         
@@ -1029,11 +1575,11 @@
             const prTrendChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ["2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08"],
+                    labels: ["2025-12-26", "2025-12-27", "2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-01", "2026-01-03", "2026-01-04", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09"],
                     datasets: [
                         {
                             label: '提交PR数',
-                            data: [6, 4, 3, 3, 11, 6, 2, 1, 5, 5, 3, 10, 5],
+                            data: [5, 4, 3, 3, 11, 6, 2, 1, 5, 5, 3, 10, 5, 3],
                             borderColor: '#28a745',
                             backgroundColor: 'rgba(40, 167, 69, 0.1)',
                             borderWidth: 2,
@@ -1042,7 +1588,7 @@
                         },
                         {
                             label: '失败PR数',
-                            data: [2, 2, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0],
+                            data: [2, 2, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
                             borderColor: '#dc3545',
                             backgroundColor: 'rgba(220, 53, 69, 0.1)',
                             borderWidth: 2,
@@ -1099,11 +1645,11 @@
             const lintDurationChart = new Chart(lintCtx, {
                 type: 'line',
                 data: {
-                    labels: ["2025-12-26 09:04:40", "2025-12-26 12:35:04", "2025-12-26 22:13:38", "2025-12-27 09:07:58", "2025-12-27 17:37:19", "2025-12-27 20:56:57", "2025-12-27 22:56:48", "2025-12-28 04:12:41", "2025-12-28 08:43:35", "2025-12-29 15:47:41", "2025-12-30 01:32:04", "2025-12-30 02:20:48", "2025-12-30 02:24:15", "2025-12-30 03:42:15", "2025-12-30 06:19:42", "2025-12-30 09:03:52", "2025-12-31 01:51:45", "2025-12-31 04:58:32", "2025-12-31 08:54:00", "2026-01-01 02:38:34", "2026-01-01 09:04:18", "2026-01-03 02:07:53", "2026-01-04 09:27:30", "2026-01-04 11:21:31", "2026-01-04 21:56:07", "2026-01-04 23:58:26", "2026-01-05 07:52:50", "2026-01-05 08:51:10", "2026-01-05 12:38:42", "2026-01-06 14:36:47", "2026-01-06 20:16:41", "2026-01-06 20:30:59", "2026-01-07 02:05:13", "2026-01-07 02:22:32", "2026-01-07 08:44:44", "2026-01-07 12:17:18", "2026-01-07 12:23:56", "2026-01-07 18:40:27", "2026-01-08 13:45:38", "2026-01-08 17:54:56"],
+                    labels: ["2025-12-26 12:35:04", "2025-12-26 22:13:38", "2025-12-27 09:07:58", "2025-12-27 17:37:19", "2025-12-27 20:56:57", "2025-12-27 22:56:48", "2025-12-28 04:12:41", "2025-12-28 08:43:35", "2025-12-29 15:47:41", "2025-12-30 01:32:04", "2025-12-30 02:20:48", "2025-12-30 02:24:15", "2025-12-30 03:42:15", "2025-12-30 06:19:42", "2025-12-30 09:03:52", "2025-12-31 01:51:45", "2025-12-31 04:58:32", "2025-12-31 08:54:00", "2026-01-01 02:38:34", "2026-01-01 09:04:18", "2026-01-03 02:07:53", "2026-01-04 09:27:30", "2026-01-04 11:21:31", "2026-01-04 21:56:07", "2026-01-04 23:58:26", "2026-01-05 07:52:50", "2026-01-05 08:51:10", "2026-01-05 12:38:42", "2026-01-06 14:36:47", "2026-01-06 20:16:41", "2026-01-06 20:30:59", "2026-01-07 02:05:13", "2026-01-07 02:22:32", "2026-01-07 08:44:44", "2026-01-07 12:17:18", "2026-01-07 12:23:56", "2026-01-07 18:40:27", "2026-01-08 13:45:38", "2026-01-08 17:54:56", "2026-01-09 07:31:40", "2026-01-09 09:42:07"],
                     datasets: [
                         {
                             label: 'Lint执行时长',
-                            data: [126.0, 142.0, 149.0, 153.0, 126.0, 148.0, 150.0, 144.0, 151.0, 161.0, 147.0, 155.0, 122.0, 155.0, 151.0, 145.0, 138.0, 150.0, 129.0, 149.0, 131.0, 134.0, 138.0, 123.0, 128.0, 132.0, 134.0, 132.0, 122.0, 139.0, 124.0, 128.0, 129.0, 126.0, 132.0, 134.0, 131.0, 133.0, 129.0, 143.0],
+                            data: [142.0, 149.0, 153.0, 126.0, 148.0, 150.0, 144.0, 151.0, 161.0, 147.0, 155.0, 122.0, 155.0, 151.0, 145.0, 138.0, 150.0, 129.0, 149.0, 131.0, 124.0, 138.0, 124.0, 128.0, 132.0, 134.0, 132.0, 122.0, 139.0, 124.0, 128.0, 129.0, 126.0, 132.0, 134.0, 131.0, 133.0, 129.0, 143.0, 126.0, 129.0],
                             borderColor: '#007bff',
                             backgroundColor: 'rgba(0, 123, 255, 0.1)',
                             borderWidth: 2,
@@ -1163,11 +1709,11 @@
             const prTestDurationChart = new Chart(prTestCtx, {
                 type: 'line',
                 data: {
-                    labels: ["2025-12-26 09:04:40", "2025-12-26 12:35:04", "2025-12-26 22:13:38", "2025-12-27 17:37:19", "2025-12-27 20:56:57", "2025-12-27 22:56:48", "2025-12-28 04:12:41", "2025-12-28 08:43:35", "2025-12-29 15:47:41", "2025-12-30 01:32:04", "2025-12-30 02:20:48", "2025-12-30 02:24:15", "2025-12-30 03:42:15", "2025-12-30 06:19:42", "2025-12-30 09:03:52", "2025-12-31 01:51:45", "2025-12-31 04:58:32", "2025-12-31 08:54:00", "2026-01-01 02:38:34", "2026-01-01 09:04:18", "2026-01-03 02:07:53", "2026-01-04 09:27:30", "2026-01-04 11:21:31", "2026-01-04 21:56:07", "2026-01-04 23:58:26", "2026-01-05 07:52:50", "2026-01-05 08:51:10", "2026-01-05 12:38:42", "2026-01-06 14:36:47", "2026-01-06 20:16:41", "2026-01-06 20:30:59", "2026-01-07 02:05:13", "2026-01-07 02:22:32", "2026-01-07 08:44:44", "2026-01-07 12:17:18", "2026-01-07 12:23:56", "2026-01-07 18:40:27", "2026-01-08 13:45:38", "2026-01-08 17:54:56"],
+                    labels: ["2025-12-26 12:35:04", "2025-12-26 22:13:38", "2025-12-27 17:37:19", "2025-12-27 20:56:57", "2025-12-27 22:56:48", "2025-12-28 04:12:41", "2025-12-28 08:43:35", "2025-12-29 15:47:41", "2025-12-30 01:32:04", "2025-12-30 02:20:48", "2025-12-30 02:24:15", "2025-12-30 03:42:15", "2025-12-30 06:19:42", "2025-12-30 09:03:52", "2025-12-31 01:51:45", "2025-12-31 04:58:32", "2025-12-31 08:54:00", "2026-01-01 02:38:34", "2026-01-01 09:04:18", "2026-01-03 02:07:53", "2026-01-04 09:27:30", "2026-01-04 11:21:31", "2026-01-04 21:56:07", "2026-01-04 23:58:26", "2026-01-05 07:52:50", "2026-01-05 08:51:10", "2026-01-05 12:38:42", "2026-01-06 14:36:47", "2026-01-06 20:16:41", "2026-01-06 20:30:59", "2026-01-07 02:05:13", "2026-01-07 02:22:32", "2026-01-07 08:44:44", "2026-01-07 12:17:18", "2026-01-07 12:23:56", "2026-01-07 18:40:27", "2026-01-08 13:45:38", "2026-01-08 17:54:56", "2026-01-09 07:31:40", "2026-01-09 09:42:07"],
                     datasets: [
                         {
                             label: 'PR Test (NPU)执行时长',
-                            data: [17.0, 10.0, 16.0, 4138.0, 17.0, 14.0, 3362.0, 8.0, 17.0, 11032.0, 10.0, 34873.0, 12.0, 17.0, 632.0, 519.0, 20.0, 9.0, 12.0, 14.0, 13.0, 11.0, 11.0, 256.0, 10649.0, 3714.0, 12.0, 21.0, 11.0, 10.0, 8.0, 20.0, 4790.0, 18.0, 10.0, 11.0, 10.0, 11.0, 11.0],
+                            data: [10.0, 16.0, 4138.0, 17.0, 14.0, 3362.0, 8.0, 17.0, 11032.0, 10.0, 34873.0, 12.0, 17.0, 632.0, 519.0, 20.0, 9.0, 12.0, 14.0, 10.0, 11.0, 12.0, 256.0, 10649.0, 3714.0, 12.0, 21.0, 11.0, 10.0, 8.0, 20.0, 4790.0, 18.0, 10.0, 11.0, 10.0, 11.0, 11.0, 18.0, 22.0],
                             borderColor: '#ffc107',
                             backgroundColor: 'rgba(255, 193, 7, 0.1)',
                             borderWidth: 2,
@@ -1222,7 +1768,7 @@
         </script>
         
         <footer class="footer">
-            <p>报告生成时间: 2026-01-09 02:56:44</p>
+            <p>报告生成时间: 2026-01-09 10:21:36</p>
             <p>数据来源: GitHub API</p>
         </footer>
     </div>
