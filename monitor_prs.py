@@ -28,7 +28,7 @@ DATA_DIR = "pr_data"  # 数据保存目录
 
 def get_github_token():
     """从环境变量获取GitHub Personal Access Token"""
-    token = "ghp_1234567890abcdef1234567890abcdef1"
+    token = os.environ.get("GH_TOKEN")
     if not token:
         print("错误: 未找到环境变量 GH_TOKEN", file=sys.stderr)
         print("请设置环境变量: $env:GH_TOKEN='your_github_token'", file=sys.stderr)
@@ -81,6 +81,17 @@ def get_pr_list(session, headers, time_range):
         }
         
         response = session.get(url, headers=headers, params=params)
+        
+        # 处理认证错误
+        if response.status_code == 401:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 发生错误: 401 Unauthorized", file=sys.stderr)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] GitHub Token无效或权限不足", file=sys.stderr)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 请检查GitHub Secrets中的GH_TOKEN是否正确配置", file=sys.stderr)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Token需要具有以下权限:", file=sys.stderr)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]   - public_repo (访问公开仓库)", file=sys.stderr)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]   - repo (访问私有仓库，如果需要)", file=sys.stderr)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]   - workflow (更新workflow文件)", file=sys.stderr)
+            raise Exception("GitHub Token认证失败: 401 Unauthorized")
         
         # 处理速率限制
         if response.status_code == 403 and "rate limit" in response.text.lower():
