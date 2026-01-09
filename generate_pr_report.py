@@ -57,6 +57,25 @@ def calculate_pr_metrics(pr_data):
     closed_prs = [pr for pr in pr_data if pr["status"] == "closed"]
     closed_count = len(closed_prs)
     
+    # 计算待合入PR数量（状态为open且标签为npu的PR）
+    open_prs = [pr for pr in pr_data if pr["status"] == "open"]
+    open_pr_count = len(open_prs)
+    
+    # 计算run-ci标签PR数量（状态为open且标签包含run-ci和npu的PR）
+    # 注意：这里我们假设PR数据中包含labels字段
+    run_ci_pr_count = 0
+    for pr in open_prs:
+        # 检查PR是否有labels字段且包含run-ci标签
+        if "labels" in pr:
+            has_run_ci = any(label.get("name") == "run-ci" for label in pr["labels"])
+            if has_run_ci:
+                run_ci_pr_count += 1
+    
+    # 计算PR门禁成功率
+    passed_门禁_prs = [pr for pr in pr_data if pr.get("门禁_status") == "passed"]
+    passed_门禁_count = len(passed_门禁_prs)
+    门禁_success_rate = round((passed_门禁_count / total_prs) * 100, 1) if total_prs > 0 else 0
+    
     # 计算合并率
     merge_rate = round((merged_count / total_prs) * 100, 1) if total_prs > 0 else 0
     
@@ -85,6 +104,55 @@ def calculate_pr_metrics(pr_data):
     # 计算平均评论数
     total_comments = sum(pr["comments_count"] + pr["review_comments_count"] for pr in pr_data)
     avg_comments = round(total_comments / total_prs, 1) if total_prs > 0 else 0
+    
+    # 计算平均执行时长
+    total_lint_duration = sum(pr.get("lint_duration", 0) for pr in pr_data if pr.get("lint_duration") is not None)
+    total_pr_test_duration = sum(pr.get("pr_test_duration", 0) for pr in pr_data if pr.get("pr_test_duration") is not None)
+    total_pr_test_npu_duration = sum(pr.get("pr_test_npu_duration", 0) for pr in pr_data if pr.get("pr_test_npu_duration") is not None)
+    
+    count_lint = sum(1 for pr in pr_data if pr.get("lint_duration") is not None)
+    count_pr_test = sum(1 for pr in pr_data if pr.get("pr_test_duration") is not None)
+    count_pr_test_npu = sum(1 for pr in pr_data if pr.get("pr_test_npu_duration") is not None)
+    
+    avg_lint_duration = round(total_lint_duration / count_lint, 1) if count_lint > 0 else None
+    avg_pr_test_duration = round(total_pr_test_duration / count_pr_test, 1) if count_pr_test > 0 else None
+    avg_pr_test_npu_duration = round(total_pr_test_npu_duration / count_pr_test_npu, 1) if count_pr_test_npu > 0 else None
+    
+    # 计算平均门禁重试次数
+    total_gate_retry_count = sum(pr.get("gate_retry_count", 0) for pr in pr_data)
+    avg_gate_retry_count = round(total_gate_retry_count / total_prs, 1) if total_prs > 0 else 0
+    
+    # 统计门禁重试次数分布
+    gate_retry_distribution = {
+        "0次": 0,
+        "1-2次": 0,
+        "3-5次": 0,
+        ">5次": 0
+    }
+    
+    for pr in pr_data:
+        retry_count = pr.get("gate_retry_count", 0)
+        if retry_count == 0:
+            gate_retry_distribution["0次"] += 1
+        elif retry_count <= 2:
+            gate_retry_distribution["1-2次"] += 1
+        elif retry_count <= 5:
+            gate_retry_distribution["3-5次"] += 1
+        else:
+            gate_retry_distribution[">5次"] += 1
+    
+    # 找出门禁重试次数最多的开发者
+    creator_retry_stats = {}
+    for pr in pr_data:
+        creator = pr["creator"]
+        retry_count = pr.get("gate_retry_count", 0)
+        if creator in creator_retry_stats:
+            creator_retry_stats[creator] += retry_count
+        else:
+            creator_retry_stats[creator] = retry_count
+    
+    # 按重试次数排序
+    sorted_creator_retry_stats = dict(sorted(creator_retry_stats.items(), key=lambda x: x[1], reverse=True))
     
     # 计算PR创建者分布
     creator_stats = {}
@@ -117,7 +185,8 @@ def calculate_pr_metrics(pr_data):
         duration_entry = {
             "time": execution_time,
             "lint": pr.get("lint_duration"),
-            "pr_test_npu": pr.get("pr_test_npu_duration")
+            "pr_test_npu": pr.get("pr_test_npu_duration"),
+            "pr_test": pr.get("pr_test_duration")
         }
         
         duration_data.append(duration_entry)
@@ -129,7 +198,7 @@ def calculate_pr_metrics(pr_data):
     sorted_duration_dates = []
     for entry in sorted_duration_data:
         # 只保留有执行时长数据的条目
-        if entry["lint"] is not None or entry["pr_test_npu"] is not None:
+        if entry["lint"] is not None or entry["pr_test_npu"] is not None or entry["pr_test"] is not None:
             # 提取日期时间作为标签
             date_time_label = entry["time"].replace("T", " ")[:-1]  # 格式：YYYY-MM-DD HH:MM:SS
             sorted_duration_dates.append((date_time_label, entry))
@@ -138,20 +207,53 @@ def calculate_pr_metrics(pr_data):
         "total_prs": total_prs,
         "merged_count": merged_count,
         "closed_count": closed_count,
+        "open_pr_count": open_pr_count,
+        "run_ci_pr_count": run_ci_pr_count,
+        "门禁_success_rate": 门禁_success_rate,
         "merge_rate": merge_rate,
         "avg_lifecycle": avg_lifecycle,
         "avg_additions": avg_additions,
         "avg_deletions": avg_deletions,
         "avg_changed_files": avg_changed_files,
         "avg_comments": avg_comments,
+        "avg_lint_duration": avg_lint_duration,
+        "avg_pr_test_duration": avg_pr_test_duration,
+        "avg_pr_test_npu_duration": avg_pr_test_npu_duration,
+        "avg_gate_retry_count": avg_gate_retry_count,
+        "gate_retry_distribution": gate_retry_distribution,
+        "creator_retry_stats": sorted_creator_retry_stats,
         "creator_stats": dict(sorted(creator_stats.items(), key=lambda x: x[1], reverse=True)),
         "date_stats": sorted_dates,
         "duration_stats": sorted_duration_dates
     }
 
 
+# 定义时长格式化函数
+def format_duration(seconds):
+    """将秒转换为时分秒格式"""
+    if seconds is None:
+        return "-"
+    
+    total_seconds = int(seconds)
+    hours = total_seconds // 3600
+    mins = (total_seconds % 3600) // 60
+    secs = total_seconds % 60
+    
+    if hours > 0:
+        return f"{hours}h{mins}m{secs}s"
+    elif mins > 0:
+        return f"{mins}m{secs}s"
+    else:
+        return f"{secs}s"
+
+
 def generate_html_report(pr_data, metrics):
     """生成HTML报告"""
+    # 格式化时长指标
+    avg_lint_duration_formatted = format_duration(metrics["avg_lint_duration"])
+    avg_pr_test_duration_formatted = format_duration(metrics["avg_pr_test_duration"])
+    avg_pr_test_npu_duration_formatted = format_duration(metrics["avg_pr_test_npu_duration"])
+    
     # 生成PR表格行
     pr_table_rows = ""
     for pr in pr_data:
@@ -166,6 +268,25 @@ def generate_html_report(pr_data, metrics):
         # 格式化评论数
         comments = f"{pr['comments_count']} + {pr['review_comments_count']}"
         
+        # 格式化门禁状态
+        门禁_status_display = pr.get("门禁_status", "unknown")
+        if 门禁_status_display == "passed":
+            门禁_status_display = "✅ 通过"
+        elif 门禁_status_display == "failed":
+            门禁_status_display = "❌ 失败"
+        elif 门禁_status_display == "pending":
+            门禁_status_display = "⏳ 进行中"
+        else:
+            门禁_status_display = "❓ 未知"
+        
+        # 格式化执行时长
+        lint_duration_display = format_duration(pr.get("lint_duration"))
+        pr_test_duration_display = format_duration(pr.get("pr_test_duration"))
+        pr_test_npu_duration_display = format_duration(pr.get("pr_test_npu_duration"))
+        
+        # 获取门禁重试次数
+        gate_retry_count = pr.get("gate_retry_count", 0)
+        
         pr_table_rows += f"""
         <tr>
             <td><a href="{pr['html_url']}" target="_blank">#{pr['pr_number']}</a></td>
@@ -176,7 +297,33 @@ def generate_html_report(pr_data, metrics):
             <td>{merged_status}</td>
             <td>{code_changes}</td>
             <td>{comments}</td>
+            <td>{门禁_status_display}</td>
+            <td>{lint_duration_display}</td>
+            <td>{pr_test_duration_display}</td>
+            <td>{pr_test_npu_duration_display}</td>
+            <td>{gate_retry_count}</td>
         </tr>
+        """
+    
+    # 生成门禁重试次数分布
+    gate_retry_distribution_items = ""
+    for retry_range, count in metrics["gate_retry_distribution"].items():
+        gate_retry_distribution_items += f"""
+        <div class="creator-item">
+            <span class="creator-name">{retry_range}</span>
+            <span class="creator-count">{count}</span>
+        </div>
+        """
+    
+    # 生成门禁重试次数最多的开发者
+    creator_retry_items = ""
+    for creator, retry_count in metrics["creator_retry_stats"].items():
+        if retry_count > 0:
+            creator_retry_items += f"""
+        <div class="creator-item">
+            <span class="creator-name">{creator}</span>
+            <span class="creator-count">{retry_count}</span>
+        </div>
         """
     
     # 生成创建者分布
@@ -269,10 +416,10 @@ def generate_html_report(pr_data, metrics):
         .metric-card { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); text-align: center; }
         .metric-value { font-size: 2.5em; font-weight: bold; color: #28a745; margin-bottom: 10px; }
         .metric-label { font-size: 1.1em; color: #666; }
-        .section { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 30px; }
+        .section { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 30px; overflow-x: auto; }
         h2 { font-size: 1.8em; margin-bottom: 20px; color: #24292e; border-bottom: 2px solid #e1e4e8; padding-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e1e4e8; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; min-width: 1500px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e1e4e8; white-space: nowrap; }
         th { background-color: #f6f8fa; font-weight: 600; }
         tr:hover { background-color: #f6f8fa; }
         a { color: #0366d6; text-decoration: none; }
@@ -297,27 +444,51 @@ def generate_html_report(pr_data, metrics):
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-value">$total_prs</div>
-                <div class="metric-label">总PR数</div>
+                <div class="metric-label">PR总数</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">$merged_count</div>
-                <div class="metric-label">已合并PR数</div>
+                <div class="metric-value">$open_pr_count</div>
+                <div class="metric-label">待合入PR数量</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">$merge_rate%</div>
-                <div class="metric-label">合并率</div>
+                <div class="metric-value">$run_ci_pr_count</div>
+                <div class="metric-label">run-ci标签PR数量</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">$avg_lifecycle天</div>
-                <div class="metric-label">平均生命周期</div>
+                <div class="metric-value">$gate_success_rate %</div>
+                <div class="metric-label">PR门禁成功率</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">$avg_additions</div>
-                <div class="metric-label">平均新增代码行</div>
+                <div class="metric-value">$avg_lint_duration_formatted</div>
+                <div class="metric-label">门禁静态检查任务时长</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">$avg_comments</div>
-                <div class="metric-label">平均评论数</div>
+                <div class="metric-value">$avg_pr_test_duration_formatted</div>
+                <div class="metric-label">PR Test自动化执行时长</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$avg_pr_test_npu_duration_formatted</div>
+                <div class="metric-label">PR Test(NPU)自动化执行时长</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$avg_gate_retry_count</div>
+                <div class="metric-label">平均门禁重试次数</div>
+            </div>
+        </div>
+        
+        <!-- 门禁重试次数分布 -->
+        <div class="section">
+            <h2>门禁重试次数分布</h2>
+            <div class="creator-list">
+                $gate_retry_distribution_items
+            </div>
+        </div>
+        
+        <!-- 门禁重试次数最多的开发者 -->
+        <div class="section">
+            <h2>门禁重试次数最多的开发者（需要重点关注）</h2>
+            <div class="creator-list">
+                $creator_retry_items
             </div>
         </div>
         
@@ -359,6 +530,11 @@ def generate_html_report(pr_data, metrics):
                         <th>合并状态</th>
                         <th>代码变更</th>
                         <th>评论数</th>
+                        <th>门禁状态</th>
+                        <th>门禁静态检查</th>
+                        <th>PR Test执行时长</th>
+                        <th>PR Test(NPU)执行时长</th>
+                        <th>门禁重试次数</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -588,14 +764,15 @@ def generate_html_report(pr_data, metrics):
         pr_table_rows=pr_table_rows,
         creator_items=creator_items,
         total_prs=metrics["total_prs"],
-        merged_count=metrics["merged_count"],
-        closed_count=metrics["closed_count"],
-        merge_rate=metrics["merge_rate"],
-        avg_lifecycle=metrics["avg_lifecycle"],
-        avg_additions=metrics["avg_additions"],
-        avg_deletions=metrics["avg_deletions"],
-        avg_changed_files=metrics["avg_changed_files"],
-        avg_comments=metrics["avg_comments"],
+        open_pr_count=metrics["open_pr_count"],
+        run_ci_pr_count=metrics["run_ci_pr_count"],
+        gate_success_rate=metrics["门禁_success_rate"],
+        avg_lint_duration_formatted=avg_lint_duration_formatted,
+        avg_pr_test_duration_formatted=avg_pr_test_duration_formatted,
+        avg_pr_test_npu_duration_formatted=avg_pr_test_npu_duration_formatted,
+        avg_gate_retry_count=metrics["avg_gate_retry_count"],
+        gate_retry_distribution_items=gate_retry_distribution_items,
+        creator_retry_items=creator_retry_items,
         chart_dates_json=chart_dates_json,
         chart_total_json=chart_total_json,
         chart_failed_json=chart_failed_json,

@@ -9,7 +9,7 @@ import os
 import sys
 import json
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -28,9 +28,10 @@ DATA_DIR = "pr_data"  # 数据保存目录
 
 def get_github_token():
     """从环境变量获取GitHub Personal Access Token"""
-    token = os.environ.get("GH_TOKEN")
+    token = "ghp_1234567890abcdef1234567890abcdef1"
     if not token:
         print("错误: 未找到环境变量 GH_TOKEN", file=sys.stderr)
+        print("请设置环境变量: $env:GH_TOKEN='your_github_token'", file=sys.stderr)
         sys.exit(1)
     return token
 
@@ -53,7 +54,7 @@ def create_session():
 
 def calculate_time_range():
     """计算近两周的时间范围"""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     two_weeks_ago = now - timedelta(days=14)
     return {
         "since": two_weeks_ago.strftime(TIME_FORMAT),
@@ -147,6 +148,26 @@ def get_pr_detail(session, headers, pr):
     return response.json()
 
 
+def get_pr_checks(session, headers, pr):
+    """获取PR的checks信息"""
+    url = f"{BASE_URL}/repos/{OWNER}/{REPO}/commits/{pr['head']['sha']}/check-runs"
+    params = {
+        "per_page": 100
+    }
+    response = session.get(url, headers=headers, params=params)
+    
+    # 处理速率限制
+    if response.status_code == 403 and "rate limit" in response.text.lower():
+        reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
+        wait_time = max(reset_time - int(time.time()), RATE_LIMIT_DELAY)
+        print(f"速率限制已达，将等待 {wait_time} 秒后重试...")
+        time.sleep(wait_time)
+        return get_pr_checks(session, headers, pr)  # 递归重试
+    
+    response.raise_for_status()
+    return response.json()['check_runs']
+
+
 def get_pr_details_batch(session, headers, pr_list, batch_size=10):
     """批量获取PR详情，提高效率"""
     pr_details = []
@@ -170,7 +191,7 @@ def get_pr_details_batch(session, headers, pr_list, batch_size=10):
             try:
                 head_sha = formatted_data["head_sha"]
                 workflow_runs = get_workflow_runs(session, headers, head_sha)
-                duration_data = parse_workflow_duration(workflow_runs)
+                duration_data = parse_workflow_duration(workflow_runs, pr['number'])
                 
                 # 将执行时长数据添加到PR数据中
                 formatted_data.update(duration_data)
@@ -179,6 +200,63 @@ def get_pr_details_batch(session, headers, pr_list, batch_size=10):
                 # 添加默认值
                 formatted_data["lint_duration"] = None
                 formatted_data["pr_test_npu_duration"] = None
+                formatted_data["pr_test_duration"] = None
+            
+            # 获取PR门禁状态和重试次数
+            try:
+                checks = get_pr_checks(session, headers, pr_detail)
+                # 初始化门禁状态
+                门禁_status = {
+                    "has_pass": False,
+                    "has_fail": False
+                }
+                
+                # 统计门禁重试次数
+                # 逻辑：同一个check名称被重新执行的次数
+                check_name_history = {}  # 记录每个check名称的执行历史
+                gate_retry_count = 0
+                
+                for check in checks:
+                    check_name = check.get("name", "")
+                    conclusion = check.get("conclusion", "")
+                    started_at = check.get("started_at", "")
+                    
+                    if check_name not in check_name_history:
+                        check_name_history[check_name] = []
+                    
+                    # 记录每次执行的时间和结果
+                    check_name_history[check_name].append({
+                        "started_at": started_at,
+                        "conclusion": conclusion
+                    })
+                    
+                    if conclusion == "success":
+                        门禁_status["has_pass"] = True
+                    elif conclusion in ["failure", "error"]:
+                        门禁_status["has_fail"] = True
+                
+                # 计算门禁重试次数：统计每个check名称的执行次数，减去1（第一次不算重试）
+                total_retries = 0
+                for check_name, executions in check_name_history.items():
+                    if len(executions) > 1:
+                        total_retries += len(executions) - 1
+                
+                gate_retry_count = total_retries
+                
+                # 确定门禁状态
+                if 门禁_status["has_pass"] and not 门禁_status["has_fail"]:
+                    formatted_data["门禁_status"] = "passed"
+                elif 门禁_status["has_fail"]:
+                    formatted_data["门禁_status"] = "failed"
+                else:
+                    formatted_data["门禁_status"] = "pending"
+                
+                # 添加门禁重试次数
+                formatted_data["gate_retry_count"] = gate_retry_count
+            except Exception as e:
+                print(f"获取PR #{pr['number']}的门禁状态时发生错误: {e}")
+                formatted_data["门禁_status"] = "unknown"
+                formatted_data["gate_retry_count"] = 0
             
             pr_details.append(formatted_data)
             detail_api_calls += 1
@@ -213,7 +291,8 @@ def format_pr_data(pr_detail):
         "comments_count": pr_detail["comments"],
         "review_comments_count": pr_detail["review_comments"],
         "html_url": pr_detail["html_url"],
-        "head_sha": pr_detail["head"]["sha"]  # 保存PR最新提交的SHA值，用于后续查询workflow
+        "head_sha": pr_detail["head"]["sha"],  # 保存PR最新提交的SHA值，用于后续查询workflow
+        "labels": pr_detail.get("labels", [])  # 保存PR标签信息
     }
 
 
@@ -239,12 +318,22 @@ def get_workflow_runs(session, headers, head_sha):
     return response.json()['workflow_runs']
 
 
-def parse_workflow_duration(workflow_runs):
+def parse_workflow_duration(workflow_runs, pr_number=None):
     """解析workflow执行时长，返回指定workflow的执行时长（秒）"""
     duration_data = {
         "lint_duration": None,
-        "pr_test_npu_duration": None
+        "pr_test_npu_duration": None,
+        "pr_test_duration": None
     }
+    
+    # 调试：打印所有workflow名称
+    if pr_number:
+        print(f"  PR #{pr_number} 的workflow runs:")
+        for run in workflow_runs:
+            name = run.get("name", "unknown")
+            status = run.get("status", "unknown")
+            conclusion = run.get("conclusion", "unknown")
+            print(f"    - {name}: status={status}, conclusion={conclusion}")
     
     for run in workflow_runs:
         workflow_name = run.get("name", "")
@@ -270,10 +359,19 @@ def parse_workflow_duration(workflow_runs):
                 if duration > 36000:  # 36000秒 = 10小时
                     continue
             
-            if workflow_name == "Lint":
+            # 使用模糊匹配来识别workflow
+            workflow_name_lower = workflow_name.lower()
+            
+            # 匹配Lint相关的workflow
+            if "lint" in workflow_name_lower:
                 duration_data["lint_duration"] = duration
-            elif workflow_name == "PR Test (NPU)":
+            # 匹配PR Test (NPU)相关的workflow
+            elif "pr test" in workflow_name_lower and "npu" in workflow_name_lower:
                 duration_data["pr_test_npu_duration"] = duration
+            # 匹配PR Test相关的workflow（排除NPU）
+            elif "pr test" in workflow_name_lower and "npu" not in workflow_name_lower:
+                duration_data["pr_test_duration"] = duration
+                
         except (KeyError, ValueError) as e:
             print(f"解析workflow执行时长时发生错误: {e}")
             continue
