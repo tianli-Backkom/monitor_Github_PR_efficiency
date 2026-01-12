@@ -191,6 +191,7 @@ def calculate_pr_metrics(pr_data):
         # 创建执行时长数据条目
         duration_entry = {
             "time": execution_time,
+            "pr_number": pr["pr_number"],
             "lint": pr.get("lint_duration"),
             "pr_test_npu": pr.get("pr_test_npu_duration"),
             "pr_test": pr.get("pr_test_duration")
@@ -381,6 +382,7 @@ def generate_html_report(pr_data, metrics):
     lint_chart_duration = []
     pr_test_chart_dates = []
     pr_test_chart_duration = []
+    pr_test_chart_pr_numbers = []
     
     for date_label, duration_data in metrics["duration_stats"]:
         # Lint执行时长数据
@@ -392,12 +394,14 @@ def generate_html_report(pr_data, metrics):
         if duration_data["pr_test_npu"] is not None:
             pr_test_chart_dates.append(date_label)
             pr_test_chart_duration.append(duration_data["pr_test_npu"])
+            pr_test_chart_pr_numbers.append(duration_data.get("pr_number", ""))
     
     # 2. 转换为JSON格式
     lint_chart_dates_json = json.dumps(lint_chart_dates)
     lint_chart_duration_json = json.dumps(lint_chart_duration)
     pr_test_chart_dates_json = json.dumps(pr_test_chart_dates)
     pr_test_chart_duration_json = json.dumps(pr_test_chart_duration)
+    pr_test_chart_pr_numbers_json = json.dumps(pr_test_chart_pr_numbers)
     
     # 生成HTML内容
     generated_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
